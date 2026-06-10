@@ -129,38 +129,45 @@ export default function SafetyCoachCard() {
             </button>
           </div>
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
-            {QUICK_ACTIONS.map((action) => (
-              <button
-                key={action}
-                type="button"
-                onClick={() => sendMessage(action)}
-                style={{
-                  border: "1px solid #1e2d45",
-                  borderRadius: 999,
-                  padding: "8px 12px",
-                  background: "#0a0e1a",
-                  color: "#a9bbd3",
-                  fontSize: 12,
-                  cursor: "pointer",
-                }}
-              >
-                {action}
-              </button>
-            ))}
-          </div>
-
           <div
             style={{
               flex: 1,
-              minHeight: 120,
               overflowY: "auto",
-              display: "grid",
-              gap: 10,
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
               paddingRight: 4,
               marginBottom: 12,
+              minHeight: 0,
             }}
           >
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 8,
+              }}
+            >
+              {QUICK_ACTIONS.map((action) => (
+                <button
+                  key={action}
+                  type="button"
+                  onClick={() => sendMessage(action)}
+                  style={{
+                    border: "1px solid #1e2d45",
+                    borderRadius: 999,
+                    padding: "8px 12px",
+                    background: "#0a0e1a",
+                    color: "#a9bbd3",
+                    fontSize: 12,
+                    cursor: "pointer",
+                  }}
+                >
+                  {action}
+                </button>
+              ))}
+            </div>
+
             {messages.map((message) => (
               <div
                 key={message.id}

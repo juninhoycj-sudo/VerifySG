@@ -755,23 +755,31 @@ export default function Home() {
   }
 
   if (!authenticated) {
-    return (
-      <>
-        <LoginGate
-          onSuccess={() => setAuthenticated(true)}
-          onOpenGuide={() => setShowHelp(true)}
-          onLog={addLog}
-        />
-        <HelpOverlay open={showHelp} onClose={() => setShowHelp(false)} onLog={addLog} />
-        <ActionConsole
-          entries={logEntries}
-          open={showConsole}
-          onToggle={() => setShowConsole((value) => !value)}
-          onClear={() => setLogEntries([])}
-        />
-      </>
-    );
-  }
+  return (
+    <>
+      <LoginGate
+        onSuccess={() => setAuthenticated(true)}
+        onOpenGuide={() => setShowHelp(true)}
+        onLog={addLog}
+      />
+
+      <HelpOverlay
+        open={showHelp}
+        onClose={() => setShowHelp(false)}
+        onLog={addLog}
+      />
+
+      <ActionConsole
+        entries={logEntries}
+        open={showConsole}
+        onToggle={() => setShowConsole((value) => !value)}
+        onClear={() => setLogEntries([])}
+      />
+
+      <SafetyCoachCard />
+    </>
+  );
+}
 
   return (
     <>
