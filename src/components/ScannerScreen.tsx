@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { ScanResult, ScanHistoryItem } from "@/lib/types";
-import { ShieldIcon, RiskBadge, getRiskColors } from "@/components/ui";
+import { ShieldIcon, getRiskColors } from "@/components/ui";
+import WarnCircleModal from "@/components/WarnCircleModal";
 
 const HISTORY_KEY = "safesg_scan_history";
 
@@ -28,12 +29,14 @@ interface Props {
 }
 
 export default function ScannerScreen({ onReport, onGoToCommunity }: Props) {
-  const [input, setInput]       = useState("");
-  const [mode, setMode]         = useState<"text" | "url">("text");
-  const [scanning, setScanning] = useState(false);
-  const [result, setResult]     = useState<ScanResult | null>(null);
-  const [dots, setDots]         = useState(0);
-  const [reported, setReported] = useState(false);
+  const [input, setInput]         = useState("");
+  const [mode, setMode]           = useState<"text" | "url">("text");
+  const [scanning, setScanning]   = useState(false);
+  const [result, setResult]       = useState<ScanResult | null>(null);
+  const [dots, setDots]           = useState(0);
+  const [reported, setReported]   = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [warned, setWarned]       = useState(false);
 
   useEffect(() => {
     if (!scanning) return;
@@ -46,6 +49,7 @@ export default function ScannerScreen({ onReport, onGoToCommunity }: Props) {
     setScanning(true);
     setResult(null);
     setReported(false);
+    setWarned(false);
     try {
       const res = await fetch("/api/scan", {
         method: "POST",
@@ -74,13 +78,9 @@ export default function ScannerScreen({ onReport, onGoToCommunity }: Props) {
     if (!result) return;
     onReport(input, result);
     setReported(true);
-    // Update the latest history item to mark as reported
     try {
       const existing: ScanHistoryItem[] = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-      if (existing.length > 0) {
-        existing[0].reported = true;
-        localStorage.setItem(HISTORY_KEY, JSON.stringify(existing));
-      }
+      if (existing.length > 0) { existing[0].reported = true; localStorage.setItem(HISTORY_KEY, JSON.stringify(existing)); }
     } catch {}
   };
 
@@ -95,46 +95,16 @@ export default function ScannerScreen({ onReport, onGoToCommunity }: Props) {
 
       <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
         {(["text", "url"] as const).map((m) => (
-          <button key={m} onClick={() => setMode(m)} style={{
-            background: mode === m ? "rgba(0,212,255,0.1)" : "transparent",
-            border: `1px solid ${mode === m ? "#00d4ff" : "#1e2d45"}`,
-            borderRadius: 8, padding: "6px 16px",
-            color: mode === m ? "#00d4ff" : "#4a5568",
-            cursor: "pointer", fontSize: 13, fontWeight: mode === m ? 600 : 400,
-          }}>
+          <button key={m} onClick={() => setMode(m)} style={{ background: mode === m ? "rgba(0,212,255,0.1)" : "transparent", border: `1px solid ${mode === m ? "#00d4ff" : "#1e2d45"}`, borderRadius: 8, padding: "6px 16px", color: mode === m ? "#00d4ff" : "#4a5568", cursor: "pointer", fontSize: 13, fontWeight: mode === m ? 600 : 400 }}>
             {m === "text" ? "📝 Text / Message" : "🔗 URL / Link"}
           </button>
         ))}
       </div>
 
-      <textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        rows={5}
-        placeholder={mode === "url" ? "Paste a suspicious URL here..." : "Paste the suspicious message, SMS, or email..."}
-        style={{ resize: "none", lineHeight: 1.6 }}
-      />
+      <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={5} placeholder={mode === "url" ? "Paste a suspicious URL here..." : "Paste the suspicious message, SMS, or email..."} style={{ resize: "none", lineHeight: 1.6 }} />
 
-      <button
-        onClick={scan}
-        disabled={scanning || !input.trim()}
-        style={{
-          width: "100%", marginTop: 12,
-          background: scanning ? "rgba(0,212,255,0.1)" : "#00d4ff",
-          border: scanning ? "1px solid #00d4ff" : "none",
-          borderRadius: 10, padding: "14px",
-          color: scanning ? "#00d4ff" : "#0a0e1a",
-          fontWeight: 700, fontSize: 15, cursor: scanning ? "default" : "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-          opacity: !scanning && !input.trim() ? 0.5 : 1,
-          transition: "all 0.2s",
-        }}
-      >
-        {scanning ? (
-          <><span className="spinner" />{`Analysing${".".repeat(dots)}`}</>
-        ) : (
-          <><ShieldIcon size={18} color="#0a0e1a" /> Scan Now</>
-        )}
+      <button onClick={scan} disabled={scanning || !input.trim()} style={{ width: "100%", marginTop: 12, background: scanning ? "rgba(0,212,255,0.1)" : "#00d4ff", border: scanning ? "1px solid #00d4ff" : "none", borderRadius: 10, padding: "14px", color: scanning ? "#00d4ff" : "#0a0e1a", fontWeight: 700, fontSize: 15, cursor: scanning ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, opacity: !scanning && !input.trim() ? 0.5 : 1, transition: "all 0.2s" }}>
+        {scanning ? <><span className="spinner" />{`Analysing${".".repeat(dots)}`}</> : <><ShieldIcon size={18} color="#0a0e1a" /> Scan Now</>}
       </button>
 
       {result && (
@@ -184,30 +154,44 @@ export default function ScannerScreen({ onReport, onGoToCommunity }: Props) {
             <p style={{ color: "#7b8fad", fontSize: 13, lineHeight: 1.7 }}>{result.explanation}</p>
           </div>
 
-          {result.riskLevel !== "LOW" && !reported && (
-            <button
-              onClick={handleReport}
-              style={{
-                width: "100%", background: "rgba(255,71,87,0.1)", border: "1px solid rgba(255,71,87,0.27)",
-                borderRadius: 10, padding: 14, color: "#ff4757", fontWeight: 600, fontSize: 14, cursor: "pointer",
-              }}
-            >
-              ⚠️ Report to Community
-            </button>
-          )}
+          {/* Action buttons */}
+          <div style={{ display: "flex", gap: 10, marginBottom: 8 }}>
+            {!warned ? (
+              <button onClick={() => setShowModal(true)} style={{ flex: 1, background: "rgba(0,212,255,0.1)", border: "1px solid rgba(0,212,255,0.27)", borderRadius: 10, padding: 14, color: "#00d4ff", fontWeight: 600, fontSize: 14, cursor: "pointer" }}>
+                🔔 Warn My Circle
+              </button>
+            ) : (
+              <div style={{ flex: 1, background: "rgba(46,213,115,0.1)", border: "1px solid rgba(46,213,115,0.27)", borderRadius: 10, padding: 14, textAlign: "center" }}>
+                <p style={{ color: "#2ed573", fontWeight: 600, fontSize: 14 }}>✅ Circle warned!</p>
+              </div>
+            )}
+            {result.riskLevel !== "LOW" && !reported && (
+              <button onClick={handleReport} style={{ flex: 1, background: "rgba(255,71,87,0.1)", border: "1px solid rgba(255,71,87,0.27)", borderRadius: 10, padding: 14, color: "#ff4757", fontWeight: 600, fontSize: 14, cursor: "pointer" }}>
+                ⚠️ Report
+              </button>
+            )}
+          </div>
+
           {reported && (
             <div className="card" style={{ background: "rgba(46,213,115,0.1)", border: "1px solid rgba(46,213,115,0.27)", textAlign: "center" }}>
               <p style={{ color: "#2ed573", fontWeight: 600, fontSize: 15 }}>✅ Report submitted</p>
               <p style={{ color: "#4a5568", fontSize: 13, marginTop: 4 }}>Thank you for keeping Singapore safe</p>
-              <button
-                onClick={onGoToCommunity}
-                style={{ marginTop: 10, background: "none", border: "1px solid rgba(46,213,115,0.4)", borderRadius: 8, padding: "6px 16px", color: "#2ed573", fontSize: 13, cursor: "pointer", fontWeight: 600 }}
-              >
+              <button onClick={onGoToCommunity} style={{ marginTop: 10, background: "none", border: "1px solid rgba(46,213,115,0.4)", borderRadius: 8, padding: "6px 16px", color: "#2ed573", fontSize: 13, cursor: "pointer", fontWeight: 600 }}>
                 View in Community →
               </button>
             </div>
           )}
         </div>
+      )}
+
+      {showModal && result && (
+        <WarnCircleModal
+          title={result.scamType + " Detected"}
+          summary={input.slice(0, 120)}
+          risk={result.riskLevel}
+          onClose={() => setShowModal(false)}
+          onWarn={() => { setWarned(true); setShowModal(false); }}
+        />
       )}
     </div>
   );
