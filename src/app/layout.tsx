@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SafeSG – Digital Shield",
+  title: "VerifySG – Digital Shield",
   description: "AI-powered scam detection and community protection for Singapore",
 };
 

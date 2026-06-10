@@ -71,7 +71,7 @@ export default function Home() {
         display: "flex", alignItems: "center", gap: 10,
       }}>
         <ShieldIcon size={26} />
-        <span style={{ color: "var(--text-primary)", fontSize: 20, fontWeight: 800, letterSpacing: -0.5 }}>SafeSG</span>
+        <span style={{ color: "var(--text-primary)", fontSize: 20, fontWeight: 800, letterSpacing: -0.5 }}>VerifySG</span>
         <span style={{ marginLeft: "auto", background: "rgba(255,71,87,0.15)", border: "1px solid rgba(255,71,87,0.27)", borderRadius: 6, padding: "3px 10px", color: "#ff4757", fontSize: 12, fontWeight: 600 }}>
           🔴 Live
         </span>
