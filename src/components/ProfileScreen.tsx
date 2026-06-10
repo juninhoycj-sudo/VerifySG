@@ -5,6 +5,8 @@ import { RiskBadge } from "@/components/ui";
 
 const HISTORY_KEY = "safesg_scan_history";
 const REPORTS_KEY = "safesg_user_reports";
+const AUTH_STORAGE_KEY = "verifysg_local_auth";
+const AUTH_USER_KEY = "verifysg_current_user";
 
 function timeAgo(iso: string): string {
   const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
@@ -27,6 +29,7 @@ export default function ProfileScreen() {
   const [history, setHistory] = useState<ScanHistoryItem[]>([]);
   const [reportCount, setReportCount] = useState(0);
   const [showAll, setShowAll] = useState(false);
+  const [username, setUsername] = useState("User");
 
   useEffect(() => {
     try {
@@ -34,6 +37,13 @@ export default function ProfileScreen() {
       setHistory(h);
       const r = JSON.parse(localStorage.getItem(REPORTS_KEY) || "[]");
       setReportCount(r.length);
+      const currentUser = localStorage.getItem(AUTH_USER_KEY);
+      if (currentUser) {
+        setUsername(currentUser);
+        return;
+      }
+      const auth = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || "null");
+      if (auth?.username) setUsername(auth.username);
     } catch {}
   }, []);
 
@@ -65,7 +75,7 @@ export default function ProfileScreen() {
         }}>
           🧑
         </div>
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: "#e8f0fe" }}>Juninho</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: "#e8f0fe" }}>{username}</h2>
         <p style={{ color: "#7b8fad", fontSize: 13, marginTop: 4 }}>SafeSG Member · Singapore 🇸🇬</p>
       </div>
 
