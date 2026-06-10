@@ -234,13 +234,14 @@ function ActionConsole({
 }) {
   return (
     <>
+      {!open && (
       <button
         type="button"
         onClick={onToggle}
         style={{
           position: "fixed",
           left: 16,
-          bottom: open ? 332 : 88,
+          bottom: 88,
           zIndex: 62,
           border: "1px solid rgba(0,212,255,0.22)",
           borderRadius: 999,
@@ -255,6 +256,7 @@ function ActionConsole({
       >
         {open ? "Hide console" : `Action console (${entries.length})`}
       </button>
+      )}
 
       {open && (
         <div
@@ -264,7 +266,7 @@ function ActionConsole({
             left: 16,
             bottom: 136,
             width: "min(360px, calc(100vw - 32px))",
-            maxHeight: "min(360px, calc(100vh - 200px))",
+            maxHeight: "min(360px, calc(100vh - 160px))",
             zIndex: 61,
             display: "flex",
             flexDirection: "column",
@@ -275,6 +277,21 @@ function ActionConsole({
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ color: "#f5fbff", fontWeight: 800, fontSize: 16 }}>Action console</div>
             <div style={{ marginLeft: "auto", color: "#7b8fad", fontSize: 12 }}>{entries.length} events</div>
+            <button
+              type="button"
+              onClick={onToggle}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#7ce3ff",
+                cursor: "pointer",
+                fontSize: 18,
+                lineHeight: 1,
+                padding: 0,
+              }}
+            >
+              ×
+            </button>
           </div>
           <p style={{ color: "#8ea4c4", fontSize: 12, lineHeight: 1.6, marginTop: 6 }}>
             Tracks scans, reports, navigation, and help usage to make demos easier to explain.

@@ -51,6 +51,7 @@ export default function SafetyCoachCard() {
 
   const launcherBottom = 124;
   const panelBottom = 160;
+  const showLauncher = !isOpen;
 
   const sendMessage = (text: string) => {
     const trimmed = text.trim();
@@ -83,7 +84,7 @@ export default function SafetyCoachCard() {
             right: 16,
             bottom: panelBottom,
             width: "min(360px, calc(100vw - 24px))",
-            height: "min(560px, calc(100vh - 220px))",
+            height: "min(560px, calc(100vh - 180px))",
             zIndex: 60,
             display: "flex",
             flexDirection: "column",
@@ -209,29 +210,31 @@ export default function SafetyCoachCard() {
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={() => setIsOpen((value) => !value)}
-        aria-label="Open Safety Coach"
-        style={{
-          position: "fixed",
-          right: 16,
-          bottom: launcherBottom,
-          zIndex: 61,
-          width: 56,
-          height: 56,
-          borderRadius: "50%",
-          border: "1px solid rgba(0,212,255,0.32)",
-          background: "linear-gradient(135deg, #00d4ff 0%, #0099ff 100%)",
-          color: "#07101f",
-          display: "grid",
-          placeItems: "center",
-          boxShadow: "0 16px 36px rgba(0, 153, 255, 0.28)",
-          cursor: "pointer",
-        }}
-      >
-        <ShieldIcon size={24} color="#07101f" />
-      </button>
+      {showLauncher && (
+        <button
+          type="button"
+          onClick={() => setIsOpen(true)}
+          aria-label="Open Safety Coach"
+          style={{
+            position: "fixed",
+            right: 16,
+            bottom: launcherBottom,
+            zIndex: 61,
+            width: 56,
+            height: 56,
+            borderRadius: "50%",
+            border: "1px solid rgba(0,212,255,0.32)",
+            background: "linear-gradient(135deg, #00d4ff 0%, #0099ff 100%)",
+            color: "#07101f",
+            display: "grid",
+            placeItems: "center",
+            boxShadow: "0 16px 36px rgba(0,153,255,0.28)",
+            cursor: "pointer",
+          }}
+        >
+          <ShieldIcon size={24} color="#07101f" />
+        </button>
+      )}
     </>
   );
 }
