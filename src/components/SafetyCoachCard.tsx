@@ -49,6 +49,9 @@ export default function SafetyCoachCard() {
   const [draft, setDraft] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
+  const launcherBottom = 124;
+  const panelBottom = 160;
+
   const sendMessage = (text: string) => {
     const trimmed = text.trim();
     if (!trimmed) return;
@@ -78,9 +81,9 @@ export default function SafetyCoachCard() {
           style={{
             position: "fixed",
             right: 16,
-            bottom: 92,
+            bottom: panelBottom,
             width: "min(360px, calc(100vw - 24px))",
-            maxHeight: "min(520px, calc(100vh - 140px))",
+            height: "min(560px, calc(100vh - 220px))",
             zIndex: 60,
             display: "flex",
             flexDirection: "column",
@@ -149,7 +152,7 @@ export default function SafetyCoachCard() {
           <div
             style={{
               flex: 1,
-              minHeight: 140,
+              minHeight: 120,
               overflowY: "auto",
               display: "grid",
               gap: 10,
@@ -177,13 +180,13 @@ export default function SafetyCoachCard() {
             ))}
           </div>
 
-          <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
+          <div style={{ display: "flex", gap: 10, alignItems: "flex-end", marginTop: "auto" }}>
             <textarea
               rows={2}
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               placeholder="Ask what to do next..."
-              style={{ resize: "none", lineHeight: 1.5 }}
+              style={{ resize: "none", lineHeight: 1.5, flex: 1 }}
             />
             <button
               type="button"
@@ -197,6 +200,7 @@ export default function SafetyCoachCard() {
                 fontWeight: 800,
                 cursor: "pointer",
                 minWidth: 74,
+                flexShrink: 0,
               }}
             >
               Send
@@ -212,7 +216,7 @@ export default function SafetyCoachCard() {
         style={{
           position: "fixed",
           right: 16,
-          bottom: 92,
+          bottom: launcherBottom,
           zIndex: 61,
           width: 56,
           height: 56,

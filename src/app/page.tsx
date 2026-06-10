@@ -7,6 +7,7 @@ import ScannerScreen from "@/components/ScannerScreen";
 import CommunityScreen from "@/components/CommunityScreen";
 import CirclesScreen from "@/components/CirclesScreen";
 import ProfileScreen from "@/components/ProfileScreen";
+import SafetyCoachCard from "@/components/SafetyCoachCard";
 import { COMMUNITY_ALERTS } from "@/lib/data";
 import { CommunityAlert, ScanResult } from "@/lib/types";
 
@@ -64,6 +65,8 @@ function LoginGate({ onSuccess }: { onSuccess: () => void }) {
   const [error, setError] = useState("");
   const [showHint, setShowHint] = useState(false);
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 760;
+
   const handleLogin = (event: React.FormEvent) => {
     event.preventDefault();
     const savedAuth = ensureLocalAuth();
@@ -87,7 +90,7 @@ function LoginGate({ onSuccess }: { onSuccess: () => void }) {
         minHeight: "100vh",
         display: "grid",
         placeItems: "center",
-        padding: "24px 16px",
+        padding: isMobile ? "20px 12px" : "24px 16px",
         background:
           "radial-gradient(circle at top, rgba(0,212,255,0.14), transparent 28%), linear-gradient(180deg, #07101f 0%, #0a0e1a 48%, #070b15 100%)",
       }}
@@ -97,15 +100,15 @@ function LoginGate({ onSuccess }: { onSuccess: () => void }) {
           width: "100%",
           maxWidth: 960,
           display: "grid",
-          gridTemplateColumns: "1.05fr 0.95fr",
-          gap: 24,
+          gridTemplateColumns: isMobile ? "1fr" : "1.05fr 0.95fr",
+          gap: isMobile ? 14 : 24,
           alignItems: "stretch",
         }}
       >
         <section
           className="card"
           style={{
-            padding: 32,
+            padding: isMobile ? 22 : 32,
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
@@ -120,12 +123,12 @@ function LoginGate({ onSuccess }: { onSuccess: () => void }) {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 10,
-                padding: "10px 14px",
+                padding: isMobile ? "8px 12px" : "10px 14px",
                 borderRadius: 999,
                 border: "1px solid rgba(0,212,255,0.18)",
                 background: "rgba(0,212,255,0.08)",
                 color: "#8eeaff",
-                fontSize: 13,
+                fontSize: isMobile ? 12 : 13,
                 fontWeight: 700,
               }}
             >
@@ -135,12 +138,12 @@ function LoginGate({ onSuccess }: { onSuccess: () => void }) {
 
             <h1
               style={{
-                marginTop: 24,
-                fontSize: 46,
-                lineHeight: 1.05,
-                letterSpacing: -1.5,
+                marginTop: isMobile ? 18 : 24,
+                fontSize: isMobile ? 34 : 46,
+                lineHeight: 1.02,
+                letterSpacing: isMobile ? -1 : -1.5,
                 color: "#f8fbff",
-                maxWidth: 460,
+                maxWidth: isMobile ? "100%" : 460,
               }}
             >
               Authenticate before entering Digital Shield.
@@ -150,9 +153,9 @@ function LoginGate({ onSuccess }: { onSuccess: () => void }) {
               style={{
                 marginTop: 16,
                 color: "#9db2ce",
-                fontSize: 17,
+                fontSize: isMobile ? 15 : 17,
                 lineHeight: 1.65,
-                maxWidth: 470,
+                maxWidth: isMobile ? "100%" : 470,
               }}
             >
               This demo login appears immediately when the app loads, so you can
@@ -161,25 +164,25 @@ function LoginGate({ onSuccess }: { onSuccess: () => void }) {
             </p>
           </div>
 
-          <div style={{ display: "grid", gap: 14, marginTop: 28 }}>
+          <div style={{ display: "grid", gap: isMobile ? 10 : 14, marginTop: isMobile ? 22 : 28 }}>
             {[
               "Scan suspicious messages and claims before they spread.",
               "Warn trusted circles about scams, misinformation, or impersonation.",
               "Show a cleaner product flow during demos and judging.",
-            ].map((text) => (
+            ].map((item) => (
               <div
-                key={text}
+                key={item}
                 className="card"
                 style={{
-                  padding: 16,
-                  background: "rgba(8, 17, 32, 0.74)",
-                  borderColor: "rgba(30,45,69,0.9)",
-                  color: "#dbeaff",
-                  fontSize: 14,
+                  padding: isMobile ? "12px 14px" : "14px 16px",
+                  color: "#b7c8df",
+                  fontSize: isMobile ? 14 : 15,
                   lineHeight: 1.6,
+                  background: "rgba(10,14,26,0.64)",
+                  borderColor: "rgba(30,45,69,0.72)",
                 }}
               >
-                {text}
+                {item}
               </div>
             ))}
           </div>
@@ -188,54 +191,91 @@ function LoginGate({ onSuccess }: { onSuccess: () => void }) {
         <section
           className="card"
           style={{
-            padding: 28,
+            padding: isMobile ? 22 : 32,
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
+            background:
+              "linear-gradient(180deg, rgba(10,14,26,0.96) 0%, rgba(8,12,24,1) 100%)",
             boxShadow: "0 24px 80px rgba(0, 0, 0, 0.34)",
           }}
         >
-          <div>
-            <p style={{ color: "#7ce3ff", fontSize: 13, fontWeight: 700, letterSpacing: 0.4 }}>
-              Local demo credentials
-            </p>
-            <h2 style={{ marginTop: 8, fontSize: 30, color: "#f8fbff", letterSpacing: -0.8 }}>
-              Sign in to continue
-            </h2>
-            <p style={{ marginTop: 10, color: "#8ea4c4", fontSize: 14, lineHeight: 1.6 }}>
-              Use any demo name with the shared password to enter the app.
-            </p>
+          <div style={{ color: "#7ce3ff", fontSize: isMobile ? 13 : 14, fontWeight: 700, letterSpacing: 0.2 }}>
+            Local demo credentials
           </div>
+          <h2
+            style={{
+              marginTop: 12,
+              fontSize: isMobile ? 32 : 44,
+              lineHeight: 1.05,
+              letterSpacing: isMobile ? -1 : -1.5,
+              color: "#f8fbff",
+            }}
+          >
+            Sign in to continue.
+          </h2>
+          <p
+            style={{
+              marginTop: 14,
+              color: "#9db2ce",
+              fontSize: isMobile ? 15 : 16,
+              lineHeight: 1.7,
+              maxWidth: 360,
+            }}
+          >
+            Use any demo name with the shared password to enter the app.
+          </p>
 
-          <form onSubmit={handleLogin} style={{ display: "grid", gap: 14, marginTop: 24 }}>
+          <form onSubmit={handleLogin} style={{ display: "grid", gap: 14, marginTop: isMobile ? 22 : 28 }}>
             <label style={{ display: "grid", gap: 8 }}>
-              <span style={{ color: "#c8d7ea", fontSize: 13, fontWeight: 600 }}>Username</span>
+              <span style={{ color: "#cfe4ff", fontSize: 13, fontWeight: 700 }}>Username</span>
               <input
-                placeholder="Ben, Harris, Ariq, or Jun"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                placeholder="Ben, Harris, Ariq, or Jun"
+                style={{
+                  width: "100%",
+                  borderRadius: 14,
+                  border: "1px solid rgba(30,45,69,0.9)",
+                  background: "rgba(7,11,21,0.9)",
+                  color: "#f8fbff",
+                  padding: isMobile ? "14px 14px" : "15px 16px",
+                  fontSize: 15,
+                  outline: "none",
+                }}
               />
             </label>
 
             <label style={{ display: "grid", gap: 8 }}>
-              <span style={{ color: "#c8d7ea", fontSize: 13, fontWeight: 600 }}>Password</span>
+              <span style={{ color: "#cfe4ff", fontSize: 13, fontWeight: 700 }}>Password</span>
               <input
                 type="password"
-                placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                style={{
+                  width: "100%",
+                  borderRadius: 14,
+                  border: "1px solid rgba(30,45,69,0.9)",
+                  background: "rgba(7,11,21,0.9)",
+                  color: "#f8fbff",
+                  padding: isMobile ? "14px 14px" : "15px 16px",
+                  fontSize: 15,
+                  outline: "none",
+                }}
               />
             </label>
 
             {error && (
               <div
                 style={{
+                  borderRadius: 12,
+                  border: "1px solid rgba(255,71,87,0.3)",
+                  background: "rgba(255,71,87,0.08)",
+                  color: "#ff9aa5",
                   padding: "12px 14px",
-                  borderRadius: 10,
-                  border: "1px solid rgba(255,71,87,0.28)",
-                  background: "rgba(255,71,87,0.12)",
-                  color: "#ff8090",
                   fontSize: 13,
+                  lineHeight: 1.6,
                   fontWeight: 600,
                 }}
               >
@@ -249,7 +289,7 @@ function LoginGate({ onSuccess }: { onSuccess: () => void }) {
                 marginTop: 6,
                 border: "none",
                 borderRadius: 14,
-                padding: "14px 16px",
+                padding: isMobile ? "15px 16px" : "14px 16px",
                 background: "linear-gradient(135deg, #00d4ff 0%, #0099ff 100%)",
                 color: "#031321",
                 fontWeight: 800,
@@ -405,6 +445,7 @@ export default function Home() {
           </button>
         ))}
       </nav>
+      <SafetyCoachCard />
     </div>
   );
 }

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { ScanResult, ScanHistoryItem } from "@/lib/types";
 import { ShieldIcon, getRiskColors } from "@/components/ui";
 import WarnCircleModal from "@/components/WarnCircleModal";
-import SafetyCoachCard from "@/components/SafetyCoachCard";
 
 const HISTORY_KEY = "safesg_scan_history";
 
@@ -96,8 +95,7 @@ export default function ScannerScreen({ onReport, onGoToCommunity }: Props) {
     : { color: "#00d4ff", glow: "rgba(0,212,255,0.1)" };
 
   return (
-    <>
-      <div style={{ padding: "24px 20px" }}>
+    <div style={{ padding: "24px 20px" }}>
         <div style={{ marginBottom: 24 }}>
           <h1 style={{ fontSize: 22, fontWeight: 700, color: "#e8f0fe" }}>Scam Scanner</h1>
           <p style={{ color: "#7b8fad", fontSize: 14, marginTop: 4 }}>
@@ -309,7 +307,5 @@ export default function ScannerScreen({ onReport, onGoToCommunity }: Props) {
           />
         )}
       </div>
-      <SafetyCoachCard />
-    </>
   );
 }
