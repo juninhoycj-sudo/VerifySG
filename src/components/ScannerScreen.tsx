@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { ScanResult, ScanHistoryItem } from "@/lib/types";
 import { ShieldIcon, getRiskColors } from "@/components/ui";
 import WarnCircleModal from "@/components/WarnCircleModal";
+import ExportWarningCard from "@/components/ExportWarningCard";
 
 const HISTORY_KEY = "safesg_scan_history";
 
@@ -418,6 +419,18 @@ export default function ScannerScreen({ onReport, onGoToCommunity }: Props) {
                 View in Community
               </button>
             )}
+          </div>
+
+          <div style={{ marginTop: 10 }}>
+            <ExportWarningCard
+              riskLevel={result.riskLevel}
+              riskScore={result.riskScore}
+              verdict={result.verdict}
+              scamType={result.scamType}
+              redFlags={result.redFlags}
+              whatToDo={result.whatToDo}
+              explanation={result.explanation}
+            />
           </div>
         </div>
       )}

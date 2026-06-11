@@ -3,6 +3,7 @@ import { useState } from "react";
 import { RiskBadge } from "@/components/ui";
 import { CommunityAlert } from "@/lib/types";
 import WarnCircleModal from "@/components/WarnCircleModal";
+import ExportWarningCard from "@/components/ExportWarningCard";
 
 interface Props {
   alerts: CommunityAlert[];
@@ -42,6 +43,17 @@ function AlertDetail({ alert, onBack }: { alert: CommunityAlert; onBack: () => v
           <p style={{ color: "#4a5568", fontSize: 13, marginTop: 4 }}>Your trusted circles have been notified</p>
         </div>
       )}
+
+      <div style={{ marginTop: 10 }}>
+        <ExportWarningCard
+          riskLevel={alert.risk}
+          verdict={alert.title}
+          scamType={alert.type}
+          redFlags={alert.tags}
+          whatToDo={["Do not engage with this type of message", "Block and report the sender", "Warn your contacts if you received this"]}
+          explanation={alert.summary}
+        />
+      </div>
 
       {showModal && (
         <WarnCircleModal
